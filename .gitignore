@@ -1,0 +1,5 @@
+npr_venv/
+.DS_Store
+__pycache_/
+*.pyc
+*.pth
