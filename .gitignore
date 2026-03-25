@@ -3,3 +3,4 @@ npr_venv/
 __pycache_/
 *.pyc
 *.pth
+dataset/
