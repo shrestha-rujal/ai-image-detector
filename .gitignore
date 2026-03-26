@@ -5,3 +5,4 @@ __pycache_/
 *.pth
 dataset/
 images/
+models/
