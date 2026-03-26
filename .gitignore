@@ -4,3 +4,4 @@ __pycache_/
 *.pyc
 *.pth
 dataset/
+images/
