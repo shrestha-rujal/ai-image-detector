@@ -6,11 +6,14 @@ import matplotlib.pyplot as plt
 from data.datasets import get_dataloader
 from networks.resnet import get_model
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
 TRAIN_DIR = "images/train"
 VAL_DIR = "images/val"
-BATCH_SIZE = 4
+BATCH_SIZE = 32
 LEARNING_RATE = 0.0002
-NUM_EPOCHS = 3
+NUM_EPOCHS = 50
 MODEL_SAVE_PATH = "models/model.pth"
 
 
@@ -37,6 +40,7 @@ def train():
         VAL_DIR, batch_size=BATCH_SIZE, shuffle=False)
 
     model = get_model()
+    model = model.to(device)
 
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -50,6 +54,9 @@ def train():
         running_loss = 0.0
 
         for images, labels in tqdm(train_loader, desc=f"Epoch {epoch+1}/{NUM_EPOCHS} [Train]"):
+            images = images.to(device)
+            labels = labels.to(device)
+
             labels = labels.float().unsqueeze(1)
 
             optimizer.zero_grad()
@@ -68,6 +75,9 @@ def train():
 
         with torch.no_grad():
             for images, labels in tqdm(val_loader, desc=f"Epoch {epoch+1}/{NUM_EPOCHS} [Val]"):
+                images = images.to(device)
+                labels = labels.to(device)
+
                 labels = labels.float().unsqueeze(1)
                 output = model(images)
                 loss = criterion(output, labels)
