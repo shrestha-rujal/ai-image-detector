@@ -11,7 +11,7 @@ print(f"Using device: {device}")
 
 TRAIN_DIR = "images/train"
 VAL_DIR = "images/val"
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 LEARNING_RATE = 0.0002
 NUM_EPOCHS = 50
 MODEL_SAVE_PATH = "models/model.pth"
@@ -87,6 +87,11 @@ def train():
 
         print(
             f"Epoch {epoch+1}/{NUM_EPOCHS} - Train Loss: {avg_train_loss:.4f} - Val Loss: {avg_val_loss:.4f}")
+
+        if (epoch + 1) % 10 == 0:
+            checkpoint_path = f"models/colab/checkpoint_epoch_{epoch+1}.pth"
+            torch.save(model.state_dict(), checkpoint_path)
+            print(f"Checkpoint saved: {checkpoint_path}")
 
         train_losses.append(avg_train_loss)
         val_losses.append(avg_val_loss)
