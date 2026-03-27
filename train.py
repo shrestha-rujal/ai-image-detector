@@ -13,7 +13,7 @@ TRAIN_DIR = "images/train"
 VAL_DIR = "images/val"
 BATCH_SIZE = 128
 LEARNING_RATE = 0.0002
-NUM_EPOCHS = 50
+NUM_EPOCHS = 20
 MODEL_SAVE_PATH = "models/model.pth"
 
 
