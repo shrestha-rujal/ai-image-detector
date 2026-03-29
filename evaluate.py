@@ -1,6 +1,8 @@
 import torch
 import numpy as np
+from PIL import Image
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 from networks.resnet import get_model
 from data.datasets import get_dataloader
 from sklearn.metrics import accuracy_score, average_precision_score
@@ -10,9 +12,13 @@ BATCH_SIZE = 4
 MODEL_PATH = "models/model.pth"
 
 
+def getLabel(label_code):
+    return 'Real' if label_code == 1 else 'Fake'
+
+
 def evaluate():
     test_loader, _ = get_dataloader(
-        TEST_DIR, batch_size=BATCH_SIZE, shuffle=False)
+        TEST_DIR, batch_size=BATCH_SIZE, shuffle=True)
 
     model = get_model()
     model.load_state_dict(torch.load(MODEL_PATH, map_location='cpu'))
@@ -22,9 +28,23 @@ def evaluate():
     all_probs = []
 
     with torch.no_grad():
-        for images, labels in tqdm(test_loader, desc="Evaluating"):
+        for images, labels, paths in tqdm(test_loader, desc="Evaluating"):
             output = model(images)
             probs = torch.sigmoid(output).squeeze(1)
+
+            preds = (probs > 0.5).int()
+
+            for i in range(len(labels)):
+                actual = labels[i].item()
+                pred = preds[i].item()
+
+                if pred != actual:
+                    img = Image.open(paths[i]).convert("RGB")
+                    plt.imshow(img)
+                    plt.title(
+                        f"Actual: {getLabel(labels[i].item())}, Pred: {getLabel(preds[i].item())}")
+                    plt.axis("off")
+                    plt.show()
 
             all_labels.extend(labels.numpy())
             all_probs.extend(probs.numpy())
