@@ -25,6 +25,13 @@ class NPRTransform:
         return npr
 
 
+class ImageFolderWithPaths(ImageFolder):
+    def __getitem__(self, index):
+        image, label = super().__getitem__(index)
+        path = self.samples[index][0]
+        return image, label, path
+
+
 def get_transform():
     return transforms.Compose([
         transforms.Resize((224, 224)),
@@ -36,7 +43,7 @@ def get_transform():
 
 
 def get_dataloader(data_dir, batch_size=32, shuffle=True):
-    dataset = ImageFolder(
+    dataset = ImageFolderWithPaths(
         root=data_dir,
         transform=get_transform()
     )
@@ -44,7 +51,9 @@ def get_dataloader(data_dir, batch_size=32, shuffle=True):
     loader = DataLoader(
         dataset,
         batch_size=batch_size,
-        shuffle=shuffle
+        shuffle=shuffle,
+        num_workers=2,
+        pin_memory=True
     )
 
     return loader, dataset
