@@ -7,14 +7,14 @@ from data.datasets import get_dataloader
 from networks.resnet import get_model
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"Using device: {device}")
+print(f"Using device: {device} in HPC")
 
 TRAIN_DIR = "images/train"
 VAL_DIR = "images/val"
-BATCH_SIZE = 128
+BATCH_SIZE = 256
 LEARNING_RATE = 0.0002
-NUM_EPOCHS = 20
-MODEL_SAVE_PATH = "models/model.pth"
+NUM_EPOCHS = 50
+MODEL_SAVE_PATH = "models"
 
 
 def plot_loss(train_losses, val_losses):
@@ -89,7 +89,7 @@ def train():
             f"Epoch {epoch+1}/{NUM_EPOCHS} - Train Loss: {avg_train_loss:.4f} - Val Loss: {avg_val_loss:.4f}")
 
         if (epoch + 1) % 10 == 0:
-            checkpoint_path = f"models/colab/checkpoint_epoch_{epoch+1}.pth"
+            checkpoint_path = f"models/checkpoint_epoch_{epoch+1}.pth"
             torch.save(model.state_dict(), checkpoint_path)
             print(f"Checkpoint saved: {checkpoint_path}")
 
